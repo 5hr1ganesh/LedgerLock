@@ -31,6 +31,7 @@ export const ABIS = {
     ],
     REGISTRY: [
         "function isVerified(address) view returns (bool)",
+        "function kycExpiration(address) view returns (uint256)",
         "function updateStatus(address, bool, uint256) returns ()",
         "event StatusUpdated(address indexed user, bool status, uint256 expiration)"
     ],
