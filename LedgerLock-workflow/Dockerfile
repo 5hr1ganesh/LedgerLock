@@ -16,4 +16,4 @@ RUN bun x cre-setup
 ENV PATH="/root/.cre/bin:${PATH}"
 
 # Command to run the workflow in actual "execution" mode
-CMD ["cre", "workflow", "run", "./", "--target", "staging-settings"]
+CMD ["bun", "run", "start"]

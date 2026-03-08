@@ -5,8 +5,9 @@
   "private": true,
   "scripts": {
     "postinstall": "bun x cre-setup",
-    "start": "/root/.cre/bin/cre workflow run ./ --target staging-settings",
-    "watch": "while true; do clear; date; /root/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 0 -R ./; /root/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 1 -R ./; /root/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 2 -R ./; sleep 15; done"
+    "cre": "cre",
+    "start": "bun x cre workflow run ./ --target staging-settings",
+    "watch": "while true; do clear; date; bun x cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 0 -R ./; bun x cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 1 -R ./; bun x cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 2 -R ./; sleep 15; done"
   },
   "license": "UNLICENSED",
   "dependencies": {
