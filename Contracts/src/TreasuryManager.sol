@@ -124,7 +124,7 @@ contract TreasuryManager is ERC4626, AccessControl {
         // Current Value = assets
         // Cost Basis = (shares * positions[owner].avgEntryPrice) / baseUnit
         uint256 costBasis = (shares * positions[owner].avgEntryPrice) /
-            (10 ** decimals());
+            (1 ether);
 
         if (assets > costBasis) {
             uint256 profit = assets - costBasis;
