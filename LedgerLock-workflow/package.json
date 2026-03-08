@@ -1,0 +1,20 @@
+{
+  "name": "typescript-simple-template",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "private": true,
+  "scripts": {
+    "postinstall": "bun x cre-setup",
+    "cre": "/Users/sgg/.cre/bin/cre",
+    "watch": "while true; do clear; date; /Users/sgg/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 0 -R ./; /Users/sgg/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 1 -R ./; /Users/sgg/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 2 -R ./; sleep 15; done"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@chainlink/cre-sdk": "^1.1.2",
+    "axios": "^1.13.6",
+    "ethers": "^6.16.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.2.21"
+  }
+}

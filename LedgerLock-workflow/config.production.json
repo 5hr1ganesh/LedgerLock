@@ -1,0 +1,8 @@
+{
+  "schedule": "0 0 * * *",
+  "treasuryAddress": "0x0000000000000000000000000000000000000000",
+  "taxVaultAddress": "0x0000000000000000000000000000000000000000",
+  "complianceRegistryAddress": "0x0000000000000000000000000000000000000000",
+  "rpcUrl": "https://mainnet.infura.io/v3/YOUR_PROD_KEY",
+  "environment": "production"
+}

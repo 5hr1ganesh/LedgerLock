@@ -1,0 +1,19 @@
+# Environment Variables
+.env
+.envmock
+*.local
+
+# Dependencies
+node_modules/
+
+# AI / Agent Metadata
+.agent/
+project.yaml
+secrets.yaml
+
+# Build Artifacts
+tmp.js
+tmp.wasm
+dist/
+out/
+cache/

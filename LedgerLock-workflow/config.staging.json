@@ -1,0 +1,8 @@
+{
+  "schedule": "0 0 * * *",
+  "treasuryAddress": "0x7Ef2D5b0cA2CF1b912262A7f0e68d47Db5801b76",
+  "taxVaultAddress": "0x7D29553b9d6E799c875b3a0AdEe6bA4c71833133",
+  "complianceRegistryAddress": "0x1FA278B7ADB3AF86d51Cbc42607898a6c1A2B742",
+  "rpcUrl": "https://virtual.mainnet.eu.rpc.tenderly.co/c7d0a91a-0974-4489-b639-4f2b13e45f8f",
+  "environment": "staging"
+}

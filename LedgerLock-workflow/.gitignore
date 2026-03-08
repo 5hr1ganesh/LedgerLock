@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Environment Variables (SENSITIVE)
+.env
+
+# Build Output
+dist/
+dist-ssr/
+tmp.js
+tmp.wasm
+
+# OS Files
+.DS_Store
+
+# Misc
+*.local
