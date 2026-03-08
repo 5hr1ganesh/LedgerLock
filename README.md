@@ -70,4 +70,17 @@ Our project uses **Chainlink Runtime Environment (CRE)** to implement a decentra
 - **Emergency Sentinel**: Reactive circuit-breaker monitoring.
 
 ---
-**LedgerLock** - *Transforming Institutional Treasury Operations with Chainlink CRE & Tenderly.*
+
+## 🌍 Real-World Impact
+LedgerLock bridges the "Trust Gap" for:
+- **Corporate CFOs**: Automating tax and auditing.
+- **DAO Leaders**: Enforcing institutional safety guardrails.
+- **RWA Issuers**: Tracking cost-basis for compliant asset management.
+
+## 🔮 Future Roadmap
+- **CCIP & Cross-Chain CRE**: Automate institutional liquidity rebalancing across multiple chains using CCIP triggered by CRE.
+- **L2 Scaling**: Reduce cost of continuous auditing.
+- **Safe Integration**: Multi-sig gated institutional controls.
+
+---
+**LedgerLock** - *Transforming Institutional Treasury Operations with Chainlink Runtime Environment & Tenderly.*
