@@ -1,12 +1,12 @@
 {
-  "name": "typescript-simple-template",
-  "version": "1.0.0",
+  "name": "ledgerlock-auditor",
+  "version": "1.1.0",
   "main": "dist/main.js",
   "private": true,
   "scripts": {
     "postinstall": "bun x cre-setup",
-    "cre": "/Users/sgg/.cre/bin/cre",
-    "watch": "while true; do clear; date; /Users/sgg/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 0 -R ./; /Users/sgg/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 1 -R ./; /Users/sgg/.cre/bin/cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 2 -R ./; sleep 15; done"
+    "start": "cre workflow run ./ --target staging-settings",
+    "watch": "while true; do clear; date; cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 0 -R ./; cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 1 -R ./; cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 2 -R ./; sleep 15; done"
   },
   "license": "UNLICENSED",
   "dependencies": {
