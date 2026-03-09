@@ -175,6 +175,16 @@ function App() {
     try {
       addEvent("Withdrawal Initiated", "Calculating realization & tax...", <ArrowDownRight size={16} />);
 
+      // Simulation: Lockdown failure
+      if (emergencySim) {
+        setTimeout(() => {
+          addEvent("Sentinel Check", "Withdrawal REJECTED by Circuit Breaker.", <ShieldAlert size={16} />, undefined, "alert");
+          setErrorMessage("LOCKDOWN ACTIVE: Treasury assets are frozen by the Sentinel.");
+          setLoading(false);
+        }, 1200);
+        return;
+      }
+
       // Simulation: Audit failure if discrepancy is active
       if (taxDiscrepancySim) {
         setTimeout(() => {
@@ -191,6 +201,7 @@ function App() {
         addEvent("Tax Deducted", "20% performance tax successfully audited.", <Database size={16} color="#ffda05" />);
         addEvent("Withdrawal Success", "Net assets realization complete.", <CheckCircle2 size={16} color="#00f2fe" />);
         setSimStep(0);
+        setAum("0"); // Clear on withdrawal
         setLoading(false);
       }, 1500);
 
@@ -272,11 +283,27 @@ function App() {
 
   const warpTime = () => {
     setLoading(true);
+    setIsMocking(true); // Lock the refresh loop
     addEvent("Yield Accrual", "Simulating 180 Days of Growth...", <Clock size={16} />);
     setTimeout(() => {
+      // MOCK YIELD GENERATION FOR DEMO
+      const currentAumNum = parseFloat(aum.replace(/,/g, ''));
+      if (currentAumNum > 0) {
+        const simulatedGrowth = currentAumNum * 0.08; // 8% growth
+        const newAum = currentAumNum + simulatedGrowth;
+        const profit = newAum - 10000; // 10k is our base
+        const accruedTax = profit * 0.20; // 20% performance tax
+
+        setAum(newAum.toFixed(2).toString());
+        setTaxLiability(accruedTax.toFixed(2).toString());
+
+        // Also bump share price slightly
+        const currentPrice = parseFloat(sharePrice);
+        setSharePrice((currentPrice * 1.08).toFixed(4).toString());
+      }
+
       addEvent("Performance Sync", "CRE Workflow verified yield per share.", <TrendingUp size={16} />);
       setLoading(false);
-      fetchData();
     }, 2000);
   };
 
