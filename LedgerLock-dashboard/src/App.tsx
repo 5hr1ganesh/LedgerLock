@@ -58,8 +58,23 @@ function App() {
   const [emergencySim, setEmergencySim] = useState(false);
   const [isMocking, setIsMocking] = useState(false);
 
+  // REFS TO PREVENT STALE CLOSURE OVERWRITES
+  const isMockingRef = React.useRef(false);
+  const emergencySimRef = React.useRef(false);
+  const taxDiscrepancySimRef = React.useRef(false);
+
+  const updateMocking = (val: boolean) => {
+    setIsMocking(val);
+    isMockingRef.current = val;
+  };
+
+  const updateEmergency = (val: boolean) => {
+    setEmergencySim(val);
+    emergencySimRef.current = val;
+  };
+
   const fetchData = useCallback(async () => {
-    if (isMocking) return;
+    if (isMockingRef.current) return;
     try {
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const treasury = new ethers.Contract(ADDRESSES.TREASURY, ABIS.TREASURY, provider);
@@ -74,7 +89,7 @@ function App() {
       const taxVaultBalance = await usdc.balanceOf(ADDRESSES.VAULT);
 
       setAum(ethers.formatUnits(totalAssets, 6));
-      setEmergencySim(emerMode);
+      updateEmergency(emerMode);
       setTaxLiability(ethers.formatUnits(taxVaultBalance, 6));
 
       if (totalSupply > 0n) {
@@ -143,8 +158,8 @@ function App() {
         addEvent("Approval Success", "USDC Ready for Deposit", <Unlock size={16} />, tx.hash);
 
       } else if (simStep === 3) {
-        // EMERGENCY BLOCK FOR DEPOSIT
-        if (emergencySim) {
+        // EMERGENCY BLOCK FOR DEPOSIT - Using Ref for absolute certainty
+        if (emergencySimRef.current) {
           addEvent("Sentinel Alert", "Inbound assets blocked by Sentinel.", <ShieldAlert size={16} />, undefined, "alert");
           setErrorMessage("LOCKDOWN ACTIVE: Treasury is not accepting new deposits.");
           setLoading(false);
@@ -183,33 +198,36 @@ function App() {
     try {
       addEvent("Withdrawal Initiated", "Calculating realization & tax...", <ArrowDownRight size={16} />);
 
-      // Simulation: Lockdown failure
-      if (emergencySim) {
+      // Simulation: Lockdown failure - Using Ref
+      if (emergencySimRef.current) {
         setTimeout(() => {
           addEvent("Sentinel Check", "Withdrawal REJECTED by Circuit Breaker.", <ShieldAlert size={16} />, undefined, "alert");
           setErrorMessage("LOCKDOWN ACTIVE: Treasury assets are frozen by the Sentinel.");
           setLoading(false);
-        }, 1200);
+        }, 800);
         return;
       }
 
-      // Simulation: Audit failure if discrepancy is active
-      if (taxDiscrepancySim) {
+      // Simulation: Audit failure if discrepancy is active - Using Ref
+      if (taxDiscrepancySimRef.current) {
         setTimeout(() => {
           addEvent("CRE Audit Alert", "Tax Accrual mismatch during withdrawal!", <ShieldAlert size={16} />, undefined, "alert");
           setErrorMessage("AUDIT FAILURE: Tax liability mismatch. CRE Workflow halted exit.");
           setLoading(false);
-        }, 1500);
+        }, 800);
         return;
       }
 
       // Real withdrawal would go here, but for demo we simulate the success path 
       // primarily to show the tax impact logic
       setTimeout(() => {
+        // FINAL SAFETY CHECK: If emergency mode was triggered during the delay, stop!
+        if (emergencySimRef.current) return;
+
         addEvent("Tax Deducted", "20% performance tax successfully audited.", <Database size={16} color="#ffda05" />);
         addEvent("Withdrawal Success", "Net assets realization complete.", <CheckCircle2 size={16} color="#00f2fe" />);
         setSimStep(0);
-        setAum("0"); // Clear on withdrawal
+        setAum("0.00"); // Clear on withdrawal
         setLoading(false);
       }, 1500);
 
@@ -222,7 +240,7 @@ function App() {
   const toggleKycExpiry = async () => {
     if (loading) return;
     setLoading(true);
-    setIsMocking(true); // Lock the UI state for the demo
+    updateMocking(true); // Lock the UI state for the demo
     try {
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const signer = new ethers.Wallet(PRIVATE_KEY, provider);
@@ -251,11 +269,12 @@ function App() {
   const toggleTaxSim = () => {
     const newStatus = !taxDiscrepancySim;
     setTaxDiscrepancySim(newStatus);
+    taxDiscrepancySimRef.current = newStatus;
     if (newStatus) {
-      setIsMocking(true); // Lock the UI for the demo alert
+      updateMocking(true); // Lock the UI for the demo alert
       addEvent("CRE Alert", "Tax Reporter detected discrepancies!", <AlertCircle size={16} />, undefined, "alert");
     } else {
-      setIsMocking(false);
+      updateMocking(false);
       addEvent("Sync Restored", "Tax Vault state audited successfully.", <CheckCircle2 size={16} />);
       fetchData();
     }
@@ -264,14 +283,14 @@ function App() {
   const toggleEmergency = async () => {
     if (loading) return;
     setLoading(true);
-    setIsMocking(true); // Lock the UI for the demo
+    updateMocking(true); // Lock for demo
     try {
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const signer = new ethers.Wallet(PRIVATE_KEY, provider);
       const treasury = new ethers.Contract(ADDRESSES.TREASURY, ABIS.TREASURY, signer);
 
       const newStatus = !emergencySim;
-      setEmergencySim(newStatus); // Update UI immediately for snappiness
+      updateEmergency(newStatus); // Update state and ref immediately
 
       addEvent("Action Requested", `${newStatus ? 'Activating' : 'Deactivating'} Circuit Breaker...`, <Zap size={16} />, undefined, "warning");
 
@@ -281,7 +300,7 @@ function App() {
       if (newStatus) {
         addEvent("Sentinel Status", "Emergency Mode ACTIVE. On-chain lock enabled.", <Zap size={16} />, tx.hash, "alert");
       } else {
-        setIsMocking(false); // Only release if turning OFF
+        updateMocking(false); // Only release if turning OFF
         addEvent("Sentinel Status", "Emergency Mode CLEARED.", <ShieldCheck size={16} />, tx.hash);
         fetchData();
       }
@@ -295,7 +314,7 @@ function App() {
 
   const warpTime = () => {
     setLoading(true);
-    setIsMocking(true); // Lock the refresh loop
+    updateMocking(true); // Lock the refresh loop
     addEvent("Yield Accrual", "Simulating 180 Days of Growth...", <Clock size={16} />);
     setTimeout(() => {
       // MOCK YIELD GENERATION FOR DEMO - Use 10,000 as base if AUM is 0 for some reason
@@ -310,6 +329,9 @@ function App() {
       setAum(newAum.toFixed(2));
       setTaxLiability(accruedTax.toFixed(2));
 
+      // Update the Feed to make it obvious
+      addEvent("Audit Synced", `Tax realization calculated: ${accruedTax.toFixed(2)} USDC`, <ShieldCheck size={16} />);
+
       // Also bump share price slightly
       setSharePrice("1.0800");
 
@@ -322,12 +344,13 @@ function App() {
     setSimStep(0);
     setEvents([]);
     setIsKyc(false);
-    setTaxLiability("0");
+    setTaxLiability("0.00");
     setErrorMessage("");
     setKycExpirySim(false);
     setTaxDiscrepancySim(false);
-    setEmergencySim(false);
-    setIsMocking(false); // Release the lock
+    taxDiscrepancySimRef.current = false;
+    updateEmergency(false);
+    updateMocking(false); // Release the lock
     fetchData();
   };
 

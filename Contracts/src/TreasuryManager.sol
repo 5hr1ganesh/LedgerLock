@@ -117,6 +117,8 @@ contract TreasuryManager is ERC4626, AccessControl {
         uint256 assets,
         uint256 shares
     ) internal override {
+        require(!isEmergencyMode, "LGL: Emergency Mode Active");
+
         // Update Position tracking
         positions[owner].totalShares -= shares;
 
