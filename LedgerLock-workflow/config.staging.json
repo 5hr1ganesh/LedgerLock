@@ -1,5 +1,5 @@
 {
-  "schedule": "0 0 * * *",
+  "schedule": "* * * * *",
   "treasuryAddress": "0xe8FE04Ed090d3b4929fD40d2042D93b4fAc65cBc",
   "taxVaultAddress": "0x914413390361d137C1DdbB9fD759559553290CF8",
   "complianceRegistryAddress": "0x931A556d1fEb9e997fae4314A03400954D42D7fc",
