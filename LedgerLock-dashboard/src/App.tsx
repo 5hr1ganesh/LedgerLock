@@ -221,8 +221,11 @@ function App() {
       // Real withdrawal would go here, but for demo we simulate the success path 
       // primarily to show the tax impact logic
       setTimeout(() => {
-        // FINAL SAFETY CHECK: If emergency mode was triggered during the delay, stop!
-        if (emergencySimRef.current) return;
+        // FINAL SAFETY BARRIER: If any audit scenario was triggered during calculation, block success!
+        if (emergencySimRef.current || taxDiscrepancySimRef.current) {
+          setLoading(false);
+          return;
+        }
 
         addEvent("Tax Deducted", "20% performance tax successfully audited.", <Database size={16} color="#ffda05" />);
         addEvent("Withdrawal Success", "Net assets realization complete.", <CheckCircle2 size={16} color="#00f2fe" />);
@@ -327,7 +330,12 @@ function App() {
       const accruedTax = Math.max(0, profit * 0.20);
 
       setAum(newAum.toFixed(2));
-      setTaxLiability(accruedTax.toFixed(2));
+
+      if (taxDiscrepancySimRef.current) {
+        setTaxLiability("DISCREPANCY");
+      } else {
+        setTaxLiability(accruedTax.toFixed(2));
+      }
 
       // Update the Feed to make it obvious
       addEvent("Audit Synced", `Tax realization calculated: ${accruedTax.toFixed(2)} USDC`, <ShieldCheck size={16} />);
