@@ -277,9 +277,7 @@ function App() {
       updateMocking(true); // Lock the UI for the demo alert
       addEvent("CRE Alert", "Tax Reporter detected discrepancies!", <AlertCircle size={16} />, undefined, "alert");
     } else {
-      updateMocking(false);
       addEvent("Sync Restored", "Tax Vault state audited successfully.", <CheckCircle2 size={16} />);
-      fetchData();
     }
   };
 
@@ -303,9 +301,7 @@ function App() {
       if (newStatus) {
         addEvent("Sentinel Status", "Emergency Mode ACTIVE. On-chain lock enabled.", <Zap size={16} />, tx.hash, "alert");
       } else {
-        updateMocking(false); // Only release if turning OFF
         addEvent("Sentinel Status", "Emergency Mode CLEARED.", <ShieldCheck size={16} />, tx.hash);
-        fetchData();
       }
     } catch (err) {
       console.error(err);
