@@ -10,7 +10,7 @@ RUN bun install
 COPY . .
 
 # Setup CRE 
-RUN ./node_modules/.bin/cre-setup
+RUN /app/node_modules/.bin/cre-setup
 
 # Path for the cre binary (Setup usually installs to ~/.cre/bin)
 ENV PATH="/root/.cre/bin:${PATH}"
