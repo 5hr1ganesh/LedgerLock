@@ -1,11 +1,11 @@
 import { ethers } from 'ethers';
 
-export const RPC_URL = "https://virtual.rpc.tenderly.co/Virata/project/private/ConveRgencE-Hackathon--Project-Demo/da0e1c90-b4ad-4a50-8b07-050fcf2ce7e5";
+export const RPC_URL = "https://virtual.mainnet.eu.rpc.tenderly.co/24c3ce14-4d7b-4417-9536-5896ba38e0dd";
 
 export const ADDRESSES = {
-    TREASURY: "0x7Ef2D5b0cA2CF1b912262A7f0e68d47Db5801b76",
-    REGISTRY: "0x1FA278B7ADB3AF86d51Cbc42607898a6c1A2B742",
-    VAULT: "0x7D29553b9d6E799c875b3a0AdEe6bA4c71833133",
+    TREASURY: "0xe8FE04Ed090d3b4929fD40d2042D93b4fAc65cBc",
+    REGISTRY: "0x931A556d1fEb9e997fae4314A03400954D42D7fc",
+    VAULT: "0x914413390361d137C1DdbB9fD759559553290CF8",
     USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     JUDGE: "0x90FbDd2951A4f1b7759f75Eb885b370ed8D14072"
 };
