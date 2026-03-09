@@ -117,7 +117,8 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 5000);
+    // 4 Minute Polling to prevent simulation overwrites
+    const interval = setInterval(fetchData, 240000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -258,6 +259,7 @@ function App() {
 
       setKycExpirySim(newStatus);
       if (newStatus) {
+        // Mock state is already true from toggle start
         addEvent("CRE Alert", "Identity expiring. Deposits will revert.", <ShieldAlert size={16} />, tx.hash, "alert");
       } else {
         addEvent("Registry Sync", "Compliance status restored.", <ShieldCheck size={16} />, tx.hash);
