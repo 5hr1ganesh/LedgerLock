@@ -13,6 +13,12 @@ By leveraging **Chainlink CRE (Runtime Environment)** for decentralized auditing
 > [!IMPORTANT]
 > **Proof of Concept (PoC) Disclaimer**: This project is submitted as a technical proof of concept for the Convergence Hackathon. While it demonstrates core institutional logic and real-world integrations, it is not audited for production use.
 
+## 🔗 Live Demo Links
+- **Frontend Dashboard (Live)**: [ledger-lock.vercel.app](https://ledger-lock.vercel.app/)
+- **Demo Video (YouTube)**: [Watch the Walkthrough](https://youtu.be/RBFBOdqRSXQ?si=dEr5KJVQygmlRGJK)
+- **CRE Workflow (Hosted)**: Autonomous on [Railway](https://railway.app/) (Monitoring [Tenderly Virtual Mainnet](https://virtual.mainnet.eu.rpc.tenderly.co/24c3ce14-4d7b-4417-9536-5896ba38e0dd))
+- **Tenderly Explorer**: [Virtual Testnet Transactions](https://dashboard.tenderly.co/explorer/vnet/557674d7-0551-40a8-a20d-38178579dae7/transactions)
+
 ---
 
 ## 🏗️ How it is Built
