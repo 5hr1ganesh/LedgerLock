@@ -143,6 +143,14 @@ function App() {
         addEvent("Approval Success", "USDC Ready for Deposit", <Unlock size={16} />, tx.hash);
 
       } else if (simStep === 3) {
+        // EMERGENCY BLOCK FOR DEPOSIT
+        if (emergencySim) {
+          addEvent("Sentinel Alert", "Inbound assets blocked by Sentinel.", <ShieldAlert size={16} />, undefined, "alert");
+          setErrorMessage("LOCKDOWN ACTIVE: Treasury is not accepting new deposits.");
+          setLoading(false);
+          return;
+        }
+
         const treasury = new ethers.Contract(ADDRESSES.TREASURY, ABIS.TREASURY, signer);
         addEvent("Treasury Deposit", "Transferring Capital...", <Coins size={16} />);
 
@@ -256,22 +264,26 @@ function App() {
   const toggleEmergency = async () => {
     if (loading) return;
     setLoading(true);
+    setIsMocking(true); // Lock the UI for the demo
     try {
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const signer = new ethers.Wallet(PRIVATE_KEY, provider);
       const treasury = new ethers.Contract(ADDRESSES.TREASURY, ABIS.TREASURY, signer);
 
       const newStatus = !emergencySim;
+      setEmergencySim(newStatus); // Update UI immediately for snappiness
+
       addEvent("Action Requested", `${newStatus ? 'Activating' : 'Deactivating'} Circuit Breaker...`, <Zap size={16} />, undefined, "warning");
 
       const tx = await treasury.toggleEmergencyMode(newStatus);
       await tx.wait();
 
-      setEmergencySim(newStatus);
       if (newStatus) {
         addEvent("Sentinel Status", "Emergency Mode ACTIVE. On-chain lock enabled.", <Zap size={16} />, tx.hash, "alert");
       } else {
+        setIsMocking(false); // Only release if turning OFF
         addEvent("Sentinel Status", "Emergency Mode CLEARED.", <ShieldCheck size={16} />, tx.hash);
+        fetchData();
       }
     } catch (err) {
       console.error(err);
@@ -286,21 +298,20 @@ function App() {
     setIsMocking(true); // Lock the refresh loop
     addEvent("Yield Accrual", "Simulating 180 Days of Growth...", <Clock size={16} />);
     setTimeout(() => {
-      // MOCK YIELD GENERATION FOR DEMO
-      const currentAumNum = parseFloat(aum.replace(/,/g, ''));
-      if (currentAumNum > 0) {
-        const simulatedGrowth = currentAumNum * 0.08; // 8% growth
-        const newAum = currentAumNum + simulatedGrowth;
-        const profit = newAum - 10000; // 10k is our base
-        const accruedTax = profit * 0.20; // 20% performance tax
+      // MOCK YIELD GENERATION FOR DEMO - Use 10,000 as base if AUM is 0 for some reason
+      const currentAumVal = aum.replace(/,/g, '');
+      const currentAumNum = parseFloat(currentAumVal) || 10000;
 
-        setAum(newAum.toFixed(2).toString());
-        setTaxLiability(accruedTax.toFixed(2).toString());
+      const simulatedGrowth = currentAumNum * 0.08; // 8% growth
+      const newAum = currentAumNum + simulatedGrowth;
+      const profit = newAum - 10000;
+      const accruedTax = Math.max(0, profit * 0.20);
 
-        // Also bump share price slightly
-        const currentPrice = parseFloat(sharePrice);
-        setSharePrice((currentPrice * 1.08).toFixed(4).toString());
-      }
+      setAum(newAum.toFixed(2));
+      setTaxLiability(accruedTax.toFixed(2));
+
+      // Also bump share price slightly
+      setSharePrice("1.0800");
 
       addEvent("Performance Sync", "CRE Workflow verified yield per share.", <TrendingUp size={16} />);
       setLoading(false);
@@ -372,7 +383,7 @@ function App() {
       <section className="hud-grid">
         <StatCard
           label="Treasury AUM"
-          value={`${Number(aum).toLocaleString()} USDC`}
+          value={`${Number(aum.replace(/,/g, '')).toLocaleString()} USDC`}
           icon={<TrendingUp />}
         />
         <StatCard
