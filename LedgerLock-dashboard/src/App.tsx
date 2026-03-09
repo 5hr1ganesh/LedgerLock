@@ -183,19 +183,9 @@ function App() {
       // Real withdrawal would go here, but for demo we simulate the success path 
       // primarily to show the tax impact logic
       setTimeout(() => {
-        // UI MOCK: Calculate exactly 20% on the simulated growth
-        const currentAum = parseFloat(aum.replace(/,/g, ''));
-        const baseCost = 10000;
-        if (currentAum > baseCost) {
-          const profit = currentAum - baseCost;
-          const newTax = (profit * 0.20).toFixed(2);
-          setTaxLiability(newTax.toString());
-        }
-
         addEvent("Tax Deducted", "20% performance tax successfully audited.", <Database size={16} color="#ffda05" />);
         addEvent("Withdrawal Success", "Net assets realization complete.", <CheckCircle2 size={16} color="#00f2fe" />);
         setSimStep(0);
-        setAum("0"); // Reset AUM on exit
         setLoading(false);
       }, 1500);
 
@@ -275,21 +265,9 @@ function App() {
     setLoading(true);
     addEvent("Yield Accrual", "Simulating 180 Days of Growth...", <Clock size={16} />);
     setTimeout(() => {
-      // MOCK YIELD GENERATION FOR DEMO
-      const currentAumNum = parseFloat(aum.replace(/,/g, ''));
-      if (currentAumNum > 0) {
-        const simulatedGrowth = currentAumNum * 0.08; // 8% growth over 180 days
-        const newAum = currentAumNum + simulatedGrowth;
-
-        setAum(newAum.toFixed(2).toString());
-
-        // Also bump share price slightly
-        const currentPrice = parseFloat(sharePrice);
-        setSharePrice((currentPrice * 1.08).toFixed(4).toString());
-      }
       addEvent("Performance Sync", "CRE Workflow verified yield per share.", <TrendingUp size={16} />);
       setLoading(false);
-      // We do NOT call fetchData() here so our mocked AUM stays on screen
+      fetchData();
     }, 2000);
   };
 
@@ -329,6 +307,28 @@ function App() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{errorMessage}</p>
           </div>
           <button onClick={() => setErrorMessage("")} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>✕</button>
+        </div>
+      )}
+
+      {emergencySim && (
+        <div style={{
+          background: 'rgba(255, 75, 43, 0.15)',
+          border: '1px solid #ff4b2b',
+          color: '#ff4b2b',
+          padding: '1rem',
+          borderRadius: '12px',
+          marginBottom: '2rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          fontWeight: 600,
+          animation: 'pulse 2s infinite'
+        }}>
+          <ShieldAlert size={24} />
+          <div style={{ flex: 1 }}>
+            EMERGENCY LOCKDOWN ACTIVE: On-chain transactions are restricted by the CRE Sentinel.
+          </div>
+          <Zap size={20} />
         </div>
       )}
 
