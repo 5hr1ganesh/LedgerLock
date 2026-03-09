@@ -21,6 +21,15 @@ By leveraging **Chainlink CRE (Runtime Environment)** for decentralized auditing
 
 ---
 
+## ⛓️ Architecture: The Chain of Trust
+LedgerLock uses a decentralized coordination pattern where the Blockchain acts as the single "Source of Truth" between the auditor and the interface.
+
+- **The Auditor (Chainlink CRE)**: A hosted off-chain agent that autonomously monitors treasury health. It reads on-chain states and, upon detecting discrepancies, enforces security by triggering the on-chain circuit breaker.
+- **The Interface (Dashboard)**: A real-time monitoring HUD that reflects the blockchain state. It does not communicate with the auditor directly; instead, it subscribes to the smart contract's state to provide instant, verified visual feedback.
+- **The Enforcement (Smart Contracts)**: The final arbiter. Once the CRE sentinel triggers a lockdown, the smart contract strictly enforces asset freezes, regardless of the UI state.
+
+---
+
 ## 🏗️ How it is Built
 LedgerLock is built as a modular monorepo merging on-chain enforcement with decentralized auditing:
 - **Smart Contracts**: Developed in **Solidity** using **Foundry**. Features a custom ERC4626-like Vault (`TreasuryManager`) gated by a `ComplianceRegistry`.
