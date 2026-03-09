@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "postinstall": "./node_modules/.bin/cre-setup",
-    "start": "cre workflow run ./ --target staging-settings",
+    "start": "./node_modules/.bin/cre workflow run ./ --target staging-settings",
     "watch": "while true; do clear; date; bun x cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 0 -R ./; bun x cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 1 -R ./; bun x cre workflow simulate ./ --target staging-settings --non-interactive --trigger-index 2 -R ./; sleep 15; done"
   },
   "license": "UNLICENSED",
