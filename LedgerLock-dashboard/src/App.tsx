@@ -56,8 +56,10 @@ function App() {
   const [kycExpirySim, setKycExpirySim] = useState(false);
   const [taxDiscrepancySim, setTaxDiscrepancySim] = useState(false);
   const [emergencySim, setEmergencySim] = useState(false);
+  const [isMocking, setIsMocking] = useState(false);
 
   const fetchData = useCallback(async () => {
+    if (isMocking) return;
     try {
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const treasury = new ethers.Contract(ADDRESSES.TREASURY, ABIS.TREASURY, provider);
@@ -86,7 +88,10 @@ function App() {
       const now = Math.floor(Date.now() / 1000);
 
       setIsKyc(registryResult);
-      setKycExpirySim(expiration > 0n && expiration <= BigInt(now));
+      // Only auto-update from chain if we aren't manually mocking an expiry in the UI
+      if (!isMocking) {
+        setKycExpirySim(expiration > 0n && expiration <= BigInt(now));
+      }
 
       // Removed: Automatic skip to Step 2
 
@@ -198,6 +203,7 @@ function App() {
   const toggleKycExpiry = async () => {
     if (loading) return;
     setLoading(true);
+    setIsMocking(true); // Lock the UI state for the demo
     try {
       const provider = new ethers.JsonRpcProvider(RPC_URL);
       const signer = new ethers.Wallet(PRIVATE_KEY, provider);
@@ -227,9 +233,12 @@ function App() {
     const newStatus = !taxDiscrepancySim;
     setTaxDiscrepancySim(newStatus);
     if (newStatus) {
+      setIsMocking(true); // Lock the UI for the demo alert
       addEvent("CRE Alert", "Tax Reporter detected discrepancies!", <AlertCircle size={16} />, undefined, "alert");
     } else {
+      setIsMocking(false);
       addEvent("Sync Restored", "Tax Vault state audited successfully.", <CheckCircle2 size={16} />);
+      fetchData();
     }
   };
 
@@ -280,6 +289,7 @@ function App() {
     setKycExpirySim(false);
     setTaxDiscrepancySim(false);
     setEmergencySim(false);
+    setIsMocking(false); // Release the lock
     fetchData();
   };
 
@@ -351,7 +361,7 @@ function App() {
         />
         <StatCard
           label="Accrued Tax Liability"
-          value={`${taxLiability} USDC`}
+          value={taxDiscrepancySim ? "DISCREPANCY" : `${taxLiability} USDC`}
           icon={<Database color={taxDiscrepancySim ? "#ff4b2b" : "#ffda05"} />}
           color={taxDiscrepancySim ? "#ff4b2b" : undefined}
         />
